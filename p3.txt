@@ -1,9 +1,9 @@
-Integer mainFunction()
+integer mainFunction()
 {
-    Integer listOfNumbers[1000];
-    Integer n;
-    Integer index;
-    Integer sumOfNumbers = 0;
+    integer listOfNumbers[1000];
+    integer n;
+    integer index;
+    integer sumOfNumbers = 0;
 
     index = 0;
     readFromKeyboard >> n;
