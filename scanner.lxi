@@ -1,0 +1,89 @@
+%{ 	 
+#include <stdio.h>
+int currentLine = 1;
+%} 
+
+%option noyywrap
+%option caseless
+
+DIGIT 			[0-9]
+WORD			["]([a-zA-Z])*["]
+NUMBER			[-|+]?[1-9][0-9]*|0
+CHARACTER		\'[^~]\'
+STRING			\"[^~]*\"
+CONSTANT		{WORD}|{NUMBER}
+IDENTIFIER 		[a-zA-Z][a-zA-Z0-9]* 
+%% 
+
+"MAINFUNCTION"	{printf( "Reserved keyword: %s\n", yytext );   }
+"READFROMKEYBOARD"	{printf( "Reserved keyword: %s\n", yytext );   }
+"WRITETOKEYBOARD"	{printf( "Reserved keyword: %s\n", yytext );   }
+"IF"	{printf( "Reserved keyword: %s\n", yytext );   }
+"ELSE"	{printf( "Reserved keyword: %s\n", yytext );   }
+"WHILE"	{printf( "Reserved keyword: %s\n", yytext );   }
+"RETURN"	{printf( "Reserved keyword: %s\n", yytext );  }
+"INTEGER"	{printf( "Reserved keyword: %s\n", yytext );   }
+"CHAR"	{printf( "Reserved keyword: %s\n", yytext );   }
+"STRING"	{printf( "Reserved keyword: %s\n", yytext );   }
+
+{IDENTIFIER}	{printf( "Identifier: %s\n", yytext );  }
+
+{CONSTANT}	{printf( "Constant: %s\n", yytext );  }
+
+";"	{printf( "Separator: %s\n", yytext );  }
+","	{printf( "Separator: %s\n", yytext );  }
+"("	{printf( "Separator: %s\n", yytext );  }
+")"	{printf( "Separator: %s\n", yytext );  }
+"["	{printf( "Separator: %s\n", yytext );  }
+"]"	{printf( "Separator: %s\n", yytext );  }
+"{"	{printf( "Separator: %s\n", yytext );  }
+"}"	{printf( "Separator: %s\n", yytext );  }
+
+"<<"  {printf( "Operator: %s\n", yytext );  }
+">>"  {printf( "Operator: %s\n", yytext );  }
+
+"+"	{printf( "Operator: %s\n", yytext );  }
+"-"	{printf( "Operator: %s\n", yytext );  }
+"*"	{printf( "Operator: %s\n", yytext );  }
+"/"	{printf( "Operator: %s\n", yytext );  }
+"%"	{printf( "Operator: %s\n", yytext );  }
+"="	{printf( "Operator: %s\n", yytext );  }
+
+":<:" {printf( "Operator: %s\n", yytext );  }
+":>:" {printf( "Operator: %s\n", yytext );  }
+":<=:" {printf( "Operator: %s\n", yytext );  }
+":>=:" {printf( "Operator: %s\n", yytext );  }
+":==:" {printf( "Operator: %s\n", yytext );  }
+":!=:" {printf( "Operator: %s\n", yytext );  }
+":&:" {printf( "Operator: %s\n", yytext );  }
+":|:" {printf( "Operator: %s\n", yytext );  }
+{CHARACTER} {printf( "Character constant: %s\n", yytext );  }
+{STRING} {printf("String constant: %s\n", yytext );  }
+
+[\n] {++currentLine;}
+
+~.*$ {++currentLine;}
+
+[\t]+ 	{} 
+
+[ ]+ 	{}
+
+
+[0-9][a-zA-Z0-9]	{printf("Illegal identifier at line %d\n", currentLine);  return -1;}
+[-][0] {printf("Illegal constant at line %d\n", currentLine);  return -1;}
+["][^"]*[\n] {printf("Illegal string: string not finished at line %d\n", currentLine); return -1;}
+['][^']*[\n] {printf("Illegal character: character not finished at line %d\n", currentLine); return -1;}
+.	{printf("Illegal symbol %s at line %d\n", yytext, currentLine);  return -1;}
+
+%%  
+int main(int argc, char** argv)
+{ 
+    ++argv, --argc; 
+    if ( argc > 0 ) 
+    yyin = fopen( argv[0], "r" ); 
+    else 
+     yyin = stdin; 
+    yylex(); 
+}
+
+
